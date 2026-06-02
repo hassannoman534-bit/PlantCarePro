@@ -3,198 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Certified Horticulturist | PlantCarePro</title>
+    <title>Book a Botanical Expert | PlantCarePro</title>
     <style>
         :root {
             --primary: #1b4332;
-            --primary-light: #2d6a4f;
+            --primary-dark: #0f271e;
             --accent: #52b788;
             --light-sage: #d8f3dc;
             --bg-clean: #f8fafc;
             --text-main: #0f172a;
             --text-muted: #475569;
             --white: #ffffff;
-            --card-shadow: 0 20px 25px -5px rgba(0,0,0,0.03), 0 10px 10px -5px rgba(0,0,0,0.03);
-            --transition: all 0.25s ease-in-out;
+            --border: #e2e8f0;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
-        body { background-color: var(--bg-clean); color: var(--text-main); }
         
-        nav { background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 1.25rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; }
-        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        body { 
+            background-color: var(--bg-clean); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-x: hidden; 
+            opacity: 0;
+            transform: translateY(15px);
+            animation: pageFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pageFadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-15px); }
+        }
+        body.page-exit {
+            animation: pageFadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        }
+        
+        nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 1.25rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .nav-links { display: flex; gap: 1.8rem; list-style: none; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; transition: var(--transition); }
-        .nav-links a:hover { color: var(--primary-light); }
-        .nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
-        .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
-        .cart-icon-container { relative: text-decoration: none; font-size: 1.3rem; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); font-weight: 800; }
+        
+        .cart-icon-container { position: relative; text-decoration: none; font-size: 1.3rem; }
         .cart-badge { position: absolute; top: -8px; right: -10px; background: #e63946; color: var(--white); border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); }
 
-        .booking-workspace { max-width: 1200px; margin: 4rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4rem; }
-        
-        .info-panel h1 { font-size: 2.7rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; line-height: 1.15; margin-bottom: 1rem; }
-        .info-panel .lead { font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; }
-        .live-pricing-panel { background: var(--primary); color: var(--white); padding: 2rem; border-radius: 12px; margin: 2rem 0; box-shadow: 0 10px 20px rgba(27,67,50,0.1); }
-        .price-readout { font-size: 2.5rem; font-weight: 800; color: var(--accent); margin: 0.5rem 0; }
-        
-        .vetted-list { list-style: none; margin-top: 2rem; }
-        .vetted-list li { margin-bottom: 1rem; padding-left: 2rem; position: relative; color: var(--text-muted); font-size: 1rem; line-height: 1.5; }
-        .vetted-list li::before { content: "✓"; color: var(--accent); position: absolute; left: 0; font-weight: 900; font-size: 1.1rem; }
+        .booking-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2.5rem;
+            align-items: start;
+        }
 
-        .interactive-form-card { background: var(--white); padding: 3rem; border-radius: 16px; box-shadow: var(--card-shadow); border: 1px solid rgba(0,0,0,0.02); }
-        .input-row { margin-bottom: 1.5rem; }
-        .input-row label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text-main); }
-        .input-row input, .input-row select, .input-row textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; transition: var(--transition); background: #f8fafc; }
-        .input-row input:focus, .input-row select:focus, .input-row textarea:focus { outline: none; border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 4px var(--light-sage); }
-        
-        .engine-btn { width: 100%; padding: 1.1rem; background: var(--primary); color: var(--white); border: none; font-size: 1.05rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: var(--transition); box-shadow: 0 4px 12px rgba(27,67,50,0.15); }
-        .engine-btn:hover { background: var(--primary-light); transform: translateY(-1px); }
+        .booking-main-panel, .booking-side-panel {
+            background: var(--white);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(27,67,50,0.02);
+        }
 
-        /* Dialog Box Overlay styling */
-        .modal-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: none; align-items:center; justify-content:center; z-index:2000; }
-        .modal-body { background: var(--white); padding: 3rem; border-radius: 16px; max-width: 450px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-        .modal-body h3 { font-size: 1.5rem; color: var(--primary); margin-bottom: 1rem; }
-        .modal-close { margin-top: 1.5rem; background: var(--primary); color: var(--white); padding: 0.6rem 2rem; border: none; border-radius: 6px; font-weight:700; cursor:pointer; }
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--bg-clean);
+            padding-bottom: 0.75rem;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin: 1.5rem 0 0.75rem 0;
+            font-weight: 800;
+        }
+
+        /* Expert Selection Matrix Cards */
+        .expert-selection-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .expert-card {
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .expert-card img {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .expert-meta h3 { font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
+        .expert-meta p { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
+        .expert-rate { margin-left: auto; font-weight: 800; color: var(--accent); font-size: 1.05rem; }
         
-        footer { text-align: center; padding: 2rem; background: #fff; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 4rem; color: var(--text-muted); font-size: 0.9rem; }
+        .expert-card.selected {
+            border-color: var(--accent);
+            background: var(--light-sage);
+        }
+
+        /* Scheduler Form Elements */
+        .datetime-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .input-element {
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            outline: none;
+            background: var(--bg-clean);
+            transition: var(--transition);
+        }
+        .input-element:focus { border-color: var(--accent); background: #fff; }
+
+        /* Dynamic Gateway Matrix Row */
+        .gateway-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .gateway-btn {
+            border: 2px solid var(--border);
+            background: #fff;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-align: center;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+        .gateway-btn.selected {
+            border-color: var(--accent);
+            background: var(--light-sage);
+            color: var(--primary);
+        }
+
+        /* Sub Forms */
+        .payment-sub-form {
+            background: var(--bg-clean);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.25rem;
+            margin-top: 1rem;
+        }
+        .form-group { margin-bottom: 0.85rem; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 800; margin-bottom: 0.3rem; color: var(--text-muted); text-transform: uppercase; }
+
+        .confirm-booking-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 1.1rem;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(27,67,50,0.1);
+        }
+        .confirm-booking-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+        footer { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border); margin-top: auto; background: #fff; }
+
         /* ==========================================================================
-   PREMIUM MOBILE OPTIMIZATION ENGINE (ADD TO THE BOTTOM OF YOUR STYLE TAGS)
-   ========================================================================== */
-
-/* Universal Touch & Tap Enhancements */
-html {
-    -webkit-text-size-adjust: 100%; /* Prevents iOS font resizing quirks */
-    touch-action: manipulation;     /* Eliminates the 300ms mobile tap delay */
-}
-
-input, button, .matrix-filter-btn, .gateway-option-card, .qty-action-btn {
-    min-height: 44px; /* Meets strict Apple & Android touch target standards */
-}
-
-/* Global Mobile Media Queries */
-@media (max-width: 768px) {
-    /* 1. Fluid Nav Menu & Responsive Header Adjustment */
-    nav {
-        padding: 1rem 4%;
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-    
-    .nav-links {
-        gap: 0.9rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    .nav-links a {
-        font-size: 0.85rem;
-        padding: 0.3rem 0.5rem;
-        background: rgba(0, 0, 0, 0.02);
-        border-radius: 6px;
-    }
-
-    /* 2. Hero Section Reductions */
-    .library-hero-zone {
-        padding: 3rem 1rem 4rem 1rem;
-    }
-    
-    .library-hero-zone h1 {
-        font-size: 1.85rem;
-        line-height: 1.2;
-    }
-    
-    .library-hero-zone p {
-        font-size: 0.95rem;
-        margin-bottom: 1.5rem;
-    }
-
-    /* 3. Horizontal Scroll Matrix for Filters (Saves Vertical Screen Space) */
-    .filter-matrix-wrapper {
-        margin: -1.5rem auto 2rem auto;
-        justify-content: flex-start;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 0.5rem 1rem;
-        gap: 0.5rem;
-        -webkit-overflow-scrolling: touch; /* Butter-smooth iOS momentum scrolling */
-    }
-    
-    .filter-matrix-wrapper::-webkit-scrollbar {
-        display: none; /* Hides ugly scrollbars while keeping swipe active */
-    }
-    
-    .matrix-filter-btn {
-        flex: 0 0 auto;
-        padding: 0.6rem 1.2rem;
-        font-size: 0.8rem;
-    }
-
-    /* 4. Single Column Card Engine Force */
-    .library-grid-container, 
-    .cart-checkout-container {
-        grid-template-columns: 1fr !important;
-        gap: 1.25rem;
-        padding: 0 1rem;
-        margin-bottom: 3rem;
-    }
-
-    .care-profile-card, 
-    .checkout-main-panel, 
-    .checkout-summary-panel {
-        padding: 1.25rem !important;
-        border-radius: 16px;
-    }
-
-    /* 5. Mobile Metric Mini Grid Collapse */
-    .vital-metrics-stack {
-        grid-template-columns: 1fr 1fr; /* Retains clean 2x2 grid on mobile screens */
-        gap: 0.5rem;
-    }
-    
-    .metric-pill-box {
-        padding: 0.5rem;
-        font-size: 0.75rem;
-    }
-
-    /* 6. Checkout Specific Mobile Adjustments */
-    .product-checkout-card {
-        flex-direction: row; /* Keeps elements side by side on slim viewports */
-        gap: 1rem;
-        align-items: flex-start;
-        position: relative;
-    }
-    
-    .product-checkout-card img {
-        width: 70px;
-        height: 70px;
-    }
-    
-    .card-meta-details h3 {
-        font-size: 1rem;
-    }
-
-    .item-destructive-trigger {
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: 0.8rem;
-    }
-
-    /* 7. Gateway Grid Engine Tuning */
-    .gateway-options-grid {
-        grid-template-columns: 1fr; /* Stack options for big, easy thumb-tapping */
-        gap: 0.5rem;
-    }
-    
-    .gateway-option-card {
-        flex-direction: row;
-        justify-content: center;
-        gap: 0.75rem;
-        padding: 0.8rem;
-    }
-}
+           MOBILE OPTIMIZATION ENGINE 
+           ========================================================================== */
+        @media (max-width: 768px) {
+            html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
+            nav { padding: 1rem 4%; flex-direction: column; gap: 1rem; }
+            .nav-links { gap: 0.8rem; flex-wrap: wrap; justify-content: center; width: 100%; }
+            .nav-links a { font-size: 0.85rem; padding: 0.3rem 0.5rem; background: rgba(0, 0, 0, 0.02); border-radius: 6px; }
+            .booking-container { grid-template-columns: 1fr !important; gap: 1.5rem; padding: 0 1rem; }
+            .booking-main-panel, .booking-side-panel { padding: 1.25rem !important; border-radius: 16px; }
+            .datetime-grid { grid-template-columns: 1fr; }
+            .expert-card { padding: 1rem; gap: 0.75rem; }
+            .expert-card img { width: 50px; height: 50px; }
+            .expert-rate { font-size: 0.95rem; }
+            .gateway-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -207,121 +219,162 @@ input, button, .matrix-filter-btn, .gateway-option-card, .qty-action-btn {
             <li><a href="seeds.html">Seeds Shop</a></li>
             <li><a href="booking.html" class="active">Book Expert</a></li>
             <li><a href="library.html">Care Library</a></li>
-            <li><a href="nursery.html">Nursery Partner</a></li> <li><a href="subscribe.html">Premium</a></li>
+            <li><a href="nursery.html">Nursery Partner</a></li>
+            <li><a href="subscribe.html">Premium</a></li>
         </ul>
         <div class="nav-actions">
-            <a href="marketplace.html" class="cart-icon-container">🛒<div class="cart-badge">0</div></a>
+            <a href="cart.html" class="cart-icon-container">🛒<div class="cart-badge" id="global-cart-count">0</div></a>
         </div>
     </nav>
 
-    <main class="booking-workspace">
-        <section class="info-panel">
-            <h1>Deploy an Expert Plant Doctor to Your Home</h1>
-            <p class="lead">Certified horticulturists are dispatched directly to your location to evaluate soil micro-environments, treat active plant infections, and establish structured care parameters for your garden.</p>
+    <main class="booking-container">
+        <!-- Expert and Time Management Panel -->
+        <section class="booking-main-panel">
+            <h2 class="panel-title">Choose Senior Consultant</h2>
             
-            <div class="live-pricing-panel">
-                <p>Calculated Diagnostic Fee Engine Matrix</p>
-                <div class="price-readout" id="dynamic-price-label">Rs. 500</div>
-                <p id="zone-disclaimer" style="font-size: 0.85rem; color: var(--light-sage);">Select a coverage sector to automatically update local dispatch pricing indexes.</p>
+            <div class="expert-selection-grid">
+                <div class="expert-card selected" data-rate="1500" data-name="Dr. Tariq Mahmood">
+                    <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=150" alt="Consultant">
+                    <div class="expert-meta">
+                        <h3>Dr. Tariq Mahmood</h3>
+                        <p>Soil Chemistry & Flora Pathology Spec.</p>
+                    </div>
+                    <div class="expert-rate">Rs. 1,500</div>
+                </div>
+
+                <div class="expert-card" data-rate="2200" data-name="Ayesha Khan (M.Phil)">
+                    <img src="https://images.unsplash.com/photo-1594824813573-246434e33963?auto=format&fit=crop&q=80&w=150" alt="Consultant">
+                    <div class="expert-meta">
+                        <h3>Ayesha Khan (M.Phil)</h3>
+                        <p>Hydroponic Matrix Engineer & Arid Botanist</p>
+                    </div>
+                    <div class="expert-rate">Rs. 2,200</div>
+                </div>
             </div>
 
-            <ul class="vetted-list">
-                <li>Comprehensive plant health evaluation and botanical identification.</li>
-                <li>Localized treatment planning designed for regional garden pests.</li>
-                <li>Soil analysis tracking nutrient deficiencies and pH level imbalances.</li>
-                <li>Custom digital care sheets specifically tailored to your onsite plant species.</li>
-            </ul>
+            <p class="section-subtitle">Select Consultation Timeline</p>
+            <div class="datetime-grid">
+                <input type="date" id="booking-date" class="input-element">
+                <input type="time" id="booking-time" class="input-element">
+            </div>
         </section>
 
-        <section class="interactive-form-card">
-            <form id="appointment-engine-form">
-                <div class="input-row">
-                    <label>Client Full Name</label>
-                    <input type="text" id="bk-name" placeholder="e.g., Zainab Iqbal" required>
+        <!-- Gateway Processing Summary Panel -->
+        <section class="booking-side-panel">
+            <h2 class="panel-title">Secure Checkout</h2>
+            <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem; font-weight:700;">
+                <span>Total Consulting Fee:</span>
+                <span id="summary-rate" style="color:var(--accent);">Rs. 1,500</span>
+            </div>
+
+            <p class="section-subtitle">Select Gateway</p>
+            <div class="gateway-grid">
+                <div class="gateway-btn selected" data-gate="Easypaisa">📱 Easypaisa</div>
+                <div class="gateway-btn" data-gate="Card">💳 Visa / Master</div>
+            </div>
+
+            <div id="booking-payment-forms">
+                <!-- Easypaisa Form -->
+                <div id="gate-Easypaisa" class="payment-sub-form">
+                    <div class="form-group">
+                        <label>Easypaisa Phone Number</label>
+                        <input type="tel" id="ep-phone" class="input-element" placeholder="03001234567" maxlength="11">
+                    </div>
                 </div>
-                <div class="input-row">
-                    <label>Mobile Number (For Dispatch Coordination)</label>
-                    <input type="tel" id="bk-phone" placeholder="e.g., 03001234567" required>
+
+                <!-- Card Form -->
+                <div id="gate-Card" class="payment-sub-form" style="display:none;">
+                    <div class="form-group">
+                        <label>Cardholder Name</label>
+                        <input type="text" id="card-holder" class="input-element" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" id="card-num" class="input-element" placeholder="4242 4242 4242 4242" maxlength="19">
+                    </div>
                 </div>
-                <div class="input-row">
-                    <label>Target Sector (Lahore Phase 1)</label>
-                    <select id="bk-zone" required>
-                        <option value="johartown" selected>Johar Town Core (Base Rate)</option>
-                        <option value="gulberg">Gulberg Zone (+ Rs. 300 Transport Offset)</option>
-                        <option value="dha">DHA Blocks (+ Rs. 500 Transport Offset)</option>
-                        <option value="model_town">Model Town Complex (+ Rs. 150 Transport Offset)</option>
-                    </select>
-                </div>
-                <div class="input-row">
-                    <label>Dominant Symptoms Present</label>
-                    <select id="bk-symptom">
-                        <option value="fungus">Fungal spotting / white leaf mold</option>
-                        <option value="root-rot">Sudden loss of leaves / stem softening</option>
-                        <option value="stunted">No growth loops / flower dropping</option>
-                    </select>
-                </div>
-                <div class="input-row">
-                    <label>Specific Address Details</label>
-                    <textarea id="bk-address" rows="2" placeholder="Street, House Number, Block..." required></textarea>
-                </div>
-                <button type="submit" class="engine-btn">Confirm Diagnostic Appointment</button>
-            </form>
+            </div>
+
+            <button class="confirm-booking-btn" id="execute-booking-trigger">Finalize Consultation Session</button>
         </section>
     </main>
-
-    <div class="modal-screen" id="success-modal">
-        <div class="modal-body">
-            <h3>📝 Appt Scheduled Successfully</h3>
-            <p id="modal-readout-text" style="color: var(--text-muted); font-size: 0.95rem;"></p>
-            <button class="modal-close" id="close-modal-btn">Return to Base</button>
-        </div>
-    </div>
 
     <footer>
         <p>&copy; 2026 PlantCarePro — Department of Computer Science and Information Technology (CSIT), University of Lahore. All Rights Reserved.</p>
     </footer>
 
-    <script src="db.js"></script>
     <script>
+        let selectedRate = 1500;
+        let selectedExpert = "Dr. Tariq Mahmood";
+        let activeGateway = "Easypaisa";
+
         document.addEventListener("DOMContentLoaded", () => {
-            const zoneElement = document.getElementById("bk-zone");
-            const priceLabel = document.getElementById("dynamic-price-label");
-            const form = document.getElementById("appointment-engine-form");
-            const modal = document.getElementById("success-modal");
-            const modalText = document.getElementById("modal-readout-text");
-            const modalClose = document.getElementById("close-modal-btn");
+            // Sync current cart count badge
+            const cart = JSON.parse(localStorage.getItem('pc_cart') || '[]');
+            document.getElementById("global-cart-count").textContent = cart.reduce((a,b)=>a+b.qty,0);
 
-            const rates = { johartown: 500, gulberg: 800, dha: 1000, model_town: 650 };
-
-            zoneElement.addEventListener("change", () => {
-                const baseCost = rates[zoneElement.value] || 500;
-                priceLabel.textContent = `Rs. ${baseCost}`;
+            // Expert Choice Selection Loop Matrix
+            document.querySelectorAll(".expert-card").forEach(card => {
+                card.addEventListener("click", () => {
+                    document.querySelectorAll(".expert-card").forEach(c => c.classList.remove("selected"));
+                    card.classList.add("selected");
+                    selectedRate = card.getAttribute("data-rate");
+                    selectedExpert = card.getAttribute("data-name");
+                    document.getElementById("summary-rate").textContent = `Rs. ${parseInt(selectedRate).toLocaleString()}`;
+                });
             });
 
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                const record = {
-                    name: document.getElementById("bk-name").value,
-                    phone: document.getElementById("bk-phone").value,
-                    zone: zoneElement.value,
-                    symptom: document.getElementById("bk-symptom").value,
-                    address: document.getElementById("bk-address").value,
-                    cost: rates[zoneElement.value] || 500
-                };
-                
-                if (typeof PC_DB !== 'undefined' && PC_DB.insert) {
-                    PC_DB.insert("bookings", record);
-                } else {
-                    console.warn("PC_DB database collection engine has not initialized.");
+            // Gateway Toggle Logic Loops
+            document.querySelectorAll(".gateway-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    document.querySelectorAll(".gateway-btn").forEach(b => b.classList.remove("selected"));
+                    btn.classList.add("selected");
+                    activeGateway = btn.getAttribute("data-gate");
+
+                    document.getElementById("gate-Easypaisa").style.display = "none";
+                    document.getElementById("gate-Card").style.display = "none";
+                    document.getElementById(`gate-${activeGateway}`).style.display = "block";
+                });
+            });
+
+            // Master Execution & Field Valuators Interceptors
+            document.getElementById("execute-booking-trigger").addEventListener("click", () => {
+                const bDate = document.getElementById("booking-date").value;
+                const bTime = document.getElementById("booking-time").value;
+
+                if(!bDate || !bTime) {
+                    alert("❌ Validation Error: Please configure a timeline parameters (Date & Time).");
+                    return;
                 }
 
-                modalText.innerHTML = `Thank you <strong>${record.name}</strong>. A certified specialist has been provisioned for dispatch to <strong>${zoneElement.options[zoneElement.selectedIndex].text}</strong>. Total verification ticket value: <strong>Rs. ${record.cost}</strong>.`;
-                modal.style.display = "flex";
-                form.reset();
-                priceLabel.textContent = "Rs. 500";
+                if(activeGateway === "Easypaisa") {
+                    const phone = document.getElementById("ep-phone").value.trim();
+                    if(phone.length < 11 || !/^\d+$/.test(phone)) {
+                        alert("❌ Validation Error: Invalid 11-digit Easypaisa connection routing string.");
+                        return;
+                    }
+                } else {
+                    const holder = document.getElementById("card-holder").value.trim();
+                    const num = document.getElementById("card-num").value.trim();
+                    if(!holder || num.length < 16) {
+                        alert("❌ Validation Error: High security credit clearing requires authentic card definitions.");
+                        return;
+                    }
+                }
+
+                alert(`🚀 Slot Appointed Securely!\n\nYour appointment with ${selectedExpert} is locked for ${bDate} at ${bTime}. Server token dispatched via ${activeGateway}!`);
             });
 
-            modalClose.addEventListener("click", () => modal.style.display = "none");
+            // Global Fluid Transition Interceptor
+            document.querySelectorAll("a[href$='.html']").forEach(a => {
+                a.addEventListener("click", (e) => {
+                    const dest = a.getAttribute("href");
+                    if (!dest || dest.startsWith("#")) return;
+                    e.preventDefault();
+                    document.body.classList.add("page-exit");
+                    setTimeout(() => { window.location.href = dest; }, 380);
+                });
+            });
         });
     </script>
 </body>
