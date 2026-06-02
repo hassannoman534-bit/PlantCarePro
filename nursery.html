@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nursery Alliance Network | PlantCarePro</title>
+    <style>
+        :root {
+            --primary: #1b4332;
+            --primary-light: #2d6a4f;
+            --accent: #52b788;
+            --bg-clean: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background-color: #fff; color: var(--text-main); }
+        
+        nav { background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 1.25rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; }
+        .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
+        .cart-icon-container { position: relative; text-decoration: none; font-size: 1.3rem; }
+        .cart-badge { position: absolute; top: -8px; right: -10px; background: #e63946; color: var(--white); border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); }
+
+        .b2b-header { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 5rem 5%; text-align: center; border-bottom: 1px solid rgba(74,222,128,0.2); }
+        .b2b-header h1 { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; }
+        .alliance-pill { background: var(--primary); color: var(--white); padding: 0.4rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+
+        .matrix-incentives { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; max-width: 1200px; margin: 4rem auto; padding: 0 1.5rem; }
+        .incentive-box { padding: 2.5rem; background: var(--bg-clean); border-top: 4px solid var(--accent); border-radius: 8px; box-shadow: var(--card-shadow); }
+        .incentive-box h3 { font-size: 1.25rem; color: var(--primary); margin-bottom: 0.75rem; }
+
+        .registration-area { background: var(--bg-clean); padding: 5rem 5%; }
+        .box-wrapper { max-width: 650px; margin: 0 auto; background: var(--white); padding: 3.5rem; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); }
+        .form-row { margin-bottom: 1.5rem; }
+        .form-row label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+        .form-row input { width: 100%; padding: 0.85rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 1rem; background: #f8fafc; }
+        .form-row input:focus { outline: none; border-color: var(--accent); background: #fff; }
+        .submit-b2b-btn { width: 100%; padding: 1.1rem; background: var(--primary); color: var(--white); border: none; font-size: 1.05rem; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .submit-b2b-btn:hover { background: var(--primary-light); }
+
+        .popup-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: none; align-items:center; justify-content:center; z-index:2000; }
+        .popup-box { background: var(--white); padding: 3rem; border-radius: 12px; max-width: 450px; text-align: center; }
+        .popup-box h3 { color: var(--primary); margin-bottom: 1rem; }
+        .popup-btn { margin-top: 1.5rem; background: var(--primary); color: var(--white); padding: 0.6rem 2rem; border: none; border-radius: 4px; font-weight:700; cursor:pointer; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">🌿 PlantCarePro</a>
+        <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="marketplace.html">Marketplace</a></li>
+    <li><a href="seeds.html">Seeds Shop</a></li>
+    <li><a href="booking.html">Book Expert</a></li>
+    <li><a href="library.html">Care Library</a></li>
+    <li><a href="nursery.html">Nursery Partner</a></li>
+    <li><a href="subscribe.html">Premium</a></li>
+</ul>
+        <div class="nav-actions">
+    <a href="cart.html" class="cart-icon-container" id="open-cart-trigger">
+        🛒<div class="cart-badge" id="global-cart-count">0</div>
+    </a>
+</div>
+    </nav>
+
+    <header class="b2b-header">
+        <span class="alliance-pill">B2B Supply Optimization</span>
+        <h1 style="margin-top: 1.25rem;">Scale Your Nursery Distribution Network</h1>
+        <p style="max-width: 650px; margin: 0 auto; color: var(--text-muted); font-size: 1.1rem;">Transition past localized social channels[cite: 1]. List your plant varieties directly inside Pakistan's digital-first plant infrastructure[cite: 1].</p>
+    </header>
+
+    <main class="matrix-incentives">
+        <div class="incentive-box">
+            <h3>🎁 Phase 1 Free Listing Window</h3>
+            <p>Onboard during our active pilot cycle to receive 90 days of platform usage with no subscription costs[cite: 1].</p>
+        </div>
+        <div class="incentive-box">
+            <h3>📊 Standardized Supply Dashboards</h3>
+            <p>Access accurate performance data, analyze consumer interest, and track orders inside an easy-to-use partner workspace[cite: 1].</p>
+        </div>
+        <div class="incentive-box">
+            <h3>🚚 Integrated Urban Delivery</h3>
+            <p>All urban logistics, order handoffs, and neighborhood transport safety matrices are fully managed by PlantCarePro riders[cite: 1].</p>
+        </div>
+    </main>
+
+    <section class="registration-area">
+        <div class="box-wrapper">
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary); text-align: center;">Partner Application Form</h2>
+            <form id="nursery-onboarding-form">
+                <div class="form-row">
+                    <label>Registered Nursery Name</label>
+                    <input type="text" id="nr-comp" placeholder="e.g., Model Town Flora Exchange" required>
+                </div>
+                <div class="form-row">
+                    <label>Managing Director Full Name</label>
+                    <input type="text" id="nr-owner" placeholder="Name of primary contact" required>
+                </div>
+                <div class="form-row">
+                    <label>WhatsApp Contact Vector</label>
+                    <input type="tel" id="nr-phone" placeholder="e.g., 03211234567" required>
+                </div>
+                <div class="form-row">
+                    <label>Physical Facility Location</label>
+                    <input type="text" id="nr-addr" placeholder="e.g., Main Patoki Road, Block H DHA Extension" required>
+                </div>
+                <button type="submit" class="submit-b2b-btn">Secure Free Launch Slot</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="popup-screen" id="b2b-success-popup">
+        <div class="popup-box">
+            <h3>🤝 Alliance Pipeline Registered</h3>
+            <p id="b2b-popup-text" style="color: var(--text-muted); font-size: 0.95rem;"></p>
+            <button class="popup-btn" id="close-b2b-popup">Close System Window</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 PlantCarePro — Department of Computer Science (CSDL), University of Lahore[cite: 1]. All Rights Reserved.</p>
+    </footer>
+
+    <script src="db.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("nursery-onboarding-form");
+            const popup = document.getElementById("b2b-success-popup");
+            const txt = document.getElementById("b2b-popup-text");
+            const closeBtn = document.getElementById("close-b2b-popup");
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const partnerData = {
+                    company: document.getElementById("nr-comp").value,
+                    owner: document.getElementById("nr-owner").value,
+                    phone: document.getElementById("nr-phone").value,
+                    address: document.getElementById("nr-addr").value
+                };
+                
+                PC_DB.insert("partners", partnerData);
+                txt.innerHTML = `Application logs created for <strong>${partnerData.company}</strong>. A dedicated Nursery Success Manager will arrive at <strong>${partnerData.address}</strong> within 24 hours to verify available items and activate your free dashboard[cite: 1].`;
+                popup.style.display = "flex";
+                form.reset();
+            });
+
+            closeBtn.addEventListener("click", () => popup.style.display = "none");
+        });
+    </script>
+</body>
+</html>

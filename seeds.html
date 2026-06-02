@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specialty Seed Vault | PlantCarePro</title>
+    <style>
+        :root {
+            --primary: #1b4332; --accent: #e76f51; --bg-clean: #f8fafc;
+            --text-main: #0f172a; --text-muted: #475569; --white: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-clean); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; 
+            animation: pageFadeIn 0.5s ease forwards; opacity: 0;
+        }
+        @keyframes pageFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        
+        nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 1.25rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.8rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; transition: var(--transition); }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); font-weight: 800; }
+        .cart-icon-container { position: relative; text-decoration: none; font-size: 1.3rem; }
+        .cart-badge { position: absolute; top: -8px; right: -10px; background: #e63946; color: var(--white); border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+        .store-header { padding: 4rem 5%; background: linear-gradient(135deg, #2a9d8f 0%, #264653 100%); color: var(--white); text-align: center; }
+        .store-header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+        .shop-container { display: grid; grid-template-columns: 280px 1fr; gap: 2.5rem; padding: 4rem 5%; max-width: 1400px; margin: 0 auto; width: 100%; }
+        
+        .filters { background: var(--white); padding: 2rem; border-radius: 16px; border: 1px solid #e2e8f0; height: fit-content; position: sticky; top: 100px; }
+        .filters h3 { margin-bottom: 1.2rem; font-size: 1.1rem; color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.4rem; }
+        .filter-group { margin-bottom: 1.8rem; }
+        .filter-label { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.7rem; color: var(--text-muted); cursor: pointer; font-size: 0.95rem; font-weight: 500; transition: var(--transition); }
+        .filter-label:hover { color: var(--primary); }
+        .filter-group input[type="checkbox"] { accent-color: var(--accent); width: 18px; height: 18px; cursor: pointer; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2rem; min-height: 400px; }
+        .product-card { background: var(--white); border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; transition: var(--transition); display: flex; flex-direction: column; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.92) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); border-color: var(--accent); }
+        .product-img { width: 100%; height: 240px; object-fit: cover; }
+        .product-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
+        .product-title { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-bottom: 0.4rem; }
+        .product-season { font-size: 0.78rem; background: #fff3cd; color: #856404; padding: 0.25rem 0.6rem; border-radius: 20px; display: inline-block; width: fit-content; margin-bottom: 1.2rem; font-weight: 600; }
+        .product-price { font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 1.2rem; margin-top: auto; }
+        .btn-add { background: var(--accent); color: var(--white); border: none; padding: 0.8rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: var(--transition); width: 100%; }
+        .btn-add:hover { background: #d62828; }
+
+        footer { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid #e2e8f0; margin-top: auto; background: #fff; }
+        @media(max-width: 900px) { .shop-container { grid-template-columns: 1fr; } .filters { position: relative; top: 0; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">🌿 PlantCarePro</a>
+        <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="marketplace.html">Marketplace</a></li>
+    <li><a href="seeds.html">Seeds Shop</a></li>
+    <li><a href="booking.html">Book Expert</a></li>
+    <li><a href="library.html">Care Library</a></li>
+    <li><a href="nursery.html">Nursery Partner</a></li>
+    <li><a href="subscribe.html">Premium</a></li>
+</ul>
+        <div class="nav-actions">
+    <a href="cart.html" class="cart-icon-container" id="open-cart-trigger">
+        🛒<div class="cart-badge" id="global-cart-count">0</div>
+    </a>
+</div>
+    </nav>
+
+    <header class="store-header">
+        <h1>Specialty Seed Vault</h1>
+        <p>Heirloom crops and native landscape varieties processed for local environments.</p>
+    </header>
+
+    <div class="shop-container">
+        <aside class="filters">
+            <div class="filter-group">
+                <h3>Crop Type</h3>
+                <label class="filter-label"><input type="checkbox" id="type-all" checked> All Seeds</label>
+                <label class="filter-label"><input type="checkbox" class="type-filter" value="vegetable"> Vegetables</label>
+                <label class="filter-label"><input type="checkbox" class="type-filter" value="herb"> Herbs</label>
+                <label class="filter-label"><input type="checkbox" class="type-filter" value="flower"> Flowers</label>
+            </div>
+            <div class="filter-group">
+                <h3>Sowing Season</h3>
+                <label class="filter-label"><input type="checkbox" id="season-all" checked> All Seasons</label>
+                <label class="filter-label"><input type="checkbox" class="season-filter" value="summer"> Summer / Kharif</label>
+                <label class="filter-label"><input type="checkbox" class="season-filter" value="winter"> Winter / Rabi</label>
+            </div>
+        </aside>
+
+        <main class="product-grid" id="seed-grid"></main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 PlantCarePro — Department of Computer Science and Information Technology (CSIT), University of Lahore. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const seeds = [
+    { 
+        id: 201, 
+        name: "Heirloom Beefsteak Tomato", 
+        label: "Summer / Spring", 
+        type: "vegetable", 
+        season: "summer", 
+        price: 350, 
+        img: "https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&w=500&q=80"
+    },
+    { 
+        id: 202, 
+        name: "Sweet Genovese Basil", 
+        label: "All Year (Indoor)", 
+        type: "herb", 
+        season: "summer", 
+        price: 200, 
+        img: "https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?auto=format&fit=crop&w=500&q=80" // Verified fresh basil bunches
+    },
+    { 
+        id: 203, 
+        name: "Giant Russian Sunflower", 
+        label: "Spring / Summer", 
+        type: "flower", 
+        season: "summer", 
+        price: 400, 
+        img: "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=500&q=80"
+    },
+    { 
+        id: 204, 
+        name: "Organic Red Chili", 
+        label: "Kharif Crop", 
+        type: "vegetable", 
+        season: "summer", 
+        price: 250, 
+        img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=500&q=80" // Verified vibrant red chili peppers
+    },
+    { 
+    id: 205, 
+    name: "Crunchy Iceberg Lettuce", 
+    label: "Rabi Crop / Winter", 
+    type: "vegetable", 
+    season: "winter", 
+    price: 300, 
+    img: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=500&q=80" // Verified fresh crisp head of lettuce
+    },
+    { 
+        id: 206, 
+        name: "English Lavender Blooms", 
+        label: "Autumn / Winter", 
+        type: "flower", 
+        season: "winter", 
+        price: 550, 
+        img: "https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=500&q=80"
+    }
+];
+
+        const grid = document.getElementById("seed-grid");
+
+        function render() {
+            grid.innerHTML = "";
+            const typeAll = document.getElementById("type-all").checked;
+            const seasonAll = document.getElementById("season-all").checked;
+
+            const activeTypes = Array.from(document.querySelectorAll(".type-filter:checked")).map(el => el.value);
+            const activeSeasons = Array.from(document.querySelectorAll(".season-filter:checked")).map(el => el.value);
+
+            seeds.forEach((seed, idx) => {
+                const matchType = typeAll || activeTypes.includes(seed.type);
+                const matchSeason = seasonAll || activeSeasons.includes(seed.season);
+
+                if (matchType && matchSeason) {
+                    const card = document.createElement("div");
+                    card.className = "product-card";
+                    card.style.animationDelay = `${idx * 0.04}s`;
+                    card.innerHTML = `
+                        <img src="${seed.img}" alt="${seed.name}" class="product-img">
+                        <div class="product-info">
+                            <div class="product-title">${seed.name}</div>
+                            <div class="product-season">Sowing: ${seed.label}</div>
+                            <div class="product-price">Rs. ${seed.price.toLocaleString()}</div>
+                            <button class="btn-add" onclick="addToCart(${seed.id}, '${seed.name}', ${seed.price})">Add to Cart</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        document.getElementById("type-all").addEventListener("change", (e) => {
+            if(e.target.checked) document.querySelectorAll(".type-filter").forEach(cb => cb.checked = false);
+            render();
+        });
+        document.querySelectorAll(".type-filter").forEach(cb => cb.addEventListener("change", () => {
+            document.getElementById("type-all").checked = !document.querySelectorAll(".type-filter:checked").length;
+            render();
+        }));
+
+        document.getElementById("season-all").addEventListener("change", (e) => {
+            if(e.target.checked) document.querySelectorAll(".season-filter").forEach(cb => cb.checked = false);
+            render();
+        });
+        document.querySelectorAll(".season-filter").forEach(cb => cb.addEventListener("change", () => {
+            document.getElementById("season-all").checked = !document.querySelectorAll(".season-filter:checked").length;
+            render();
+        }));
+
+        function addToCart(id, name, price) {
+            let cart = JSON.parse(localStorage.getItem('pc_cart') || '[]');
+            const existing = cart.find(item => item.id === id);
+            if (existing) existing.qty += 1;
+            else cart.push({ id, name, price, qty: 1 });
+            localStorage.setItem('pc_cart', JSON.stringify(cart));
+            updateCartBadge();
+        }
+
+        const updateCartBadge = () => {
+            const countBadge = document.getElementById("global-cart-count");
+            const currentCart = JSON.parse(localStorage.getItem('pc_cart') || '[]');
+            countBadge.textContent = currentCart.reduce((acc, item) => acc + item.qty, 0);
+        };
+
+        render();
+        document.addEventListener("DOMContentLoaded", updateCartBadge);
+    </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botanical Care Library | PlantCarePro</title>
+    <style>
+        :root {
+            --primary: #1b4332;
+            --primary-dark: #0f271e;
+            --accent: #52b788;
+            --light-sage: #d8f3dc;
+            --bg-clean: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-clean); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-x: hidden; 
+            opacity: 0;
+            transform: translateY(15px);
+            animation: pageFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pageFadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-15px); }
+        }
+        body.page-exit {
+            animation: pageFadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        }
+        
+        nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 1.25rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .nav-links { display: flex; gap: 1.8rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; transition: var(--transition); }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); font-weight: 800; }
+        
+        .cart-icon-container { position: relative; text-decoration: none; font-size: 1.3rem; }
+        .cart-badge { position: absolute; top: -8px; right: -10px; background: #e63946; color: var(--white); border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); }
+
+        /* Library Control Dashboard Header */
+        .library-hero-zone {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 4rem 10% 6rem 10%;
+            text-align: center;
+            position: relative;
+        }
+        .library-hero-zone h1 { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 1rem; }
+        .library-hero-zone p { color: #b7e4c7; font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto; line-height: 1.6; }
+        
+        .search-wrapper {
+            max-width: 550px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .search-wrapper input {
+            width: 100%;
+            padding: 1.1rem 1.5rem;
+            border-radius: 14px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            transition: var(--transition);
+        }
+        .search-wrapper input:focus {
+            box-shadow: 0 15px 35px rgba(82, 183, 136, 0.3);
+        }
+
+        /* Filter Matrix Navigation Component */
+        .filter-matrix-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: -2rem auto 3rem auto;
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            padding: 0 1.5rem;
+            flex-wrap: wrap;
+        }
+        .matrix-filter-btn {
+            background: var(--white);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: var(--transition);
+        }
+        .matrix-filter-btn:hover, .matrix-filter-btn.active {
+            background: var(--accent);
+            color: var(--white);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(82, 183, 136, 0.2);
+        }
+
+        /* Botanical Grid Grid Engine */
+        .library-grid-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto 5rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+
+        .care-profile-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(27,67,50,0.02);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        .care-profile-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(27,67,50,0.06);
+            border-color: #c9e8d1;
+        }
+
+        .card-image-lens {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-image-lens img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        .care-profile-card:hover .card-image-lens img { transform: scale(1.05); }
+
+        .category-pill-tag {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(27, 67, 50, 0.85);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            padding: 0.4rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-body-metrics {
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .card-body-metrics h3 { font-size: 1.3rem; font-weight: 900; color: var(--primary); margin-bottom: 0.5rem; }
+        .card-body-metrics .scientific-term { font-size: 0.85rem; font-style: italic; color: var(--text-muted); margin-bottom: 1.25rem; display: block; }
+        
+        /* Metric Mini Grid */
+        .vital-metrics-stack {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .metric-pill-box {
+            background: var(--bg-clean);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .metric-pill-box span.emoji { font-size: 1.1rem; }
+
+        .care-instruction-snippet {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .action-expansion-btn {
+            width: 100%;
+            background: var(--bg-clean);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        .action-expansion-btn:hover {
+            background: var(--light-sage);
+            border-color: var(--accent);
+        }
+
+        .no-results-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 0;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        footer { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border); margin-top: auto; background: #fff; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">🌿 PlantCarePro</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="marketplace.html">Marketplace</a></li>
+            <li><a href="seeds.html">Seeds Shop</a></li>
+            <li><a href="booking.html">Book Expert</a></li>
+            <li><a href="library.html" class="active">Care Library</a></li>
+            <li><a href="nursery.html">Nursery Partner</a></li>
+            <li><a href="subscribe.html">Premium</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="cart.html" class="cart-icon-container">🛒<div class="cart-badge" id="global-cart-count">0</div></a>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="library-hero-zone">
+        <h1>Ecosystem Botanical Library</h1>
+        <p>Access high-fidelity plant metrics, algorithmic watering cycles, and diagnostic guidelines configured by automated cultivation protocols.</p>
+        <div class="search-wrapper">
+            <input type="text" id="library-search-field" placeholder="Search care manuals by plant name or keywords...">
+        </div>
+    </header>
+
+    <!-- Filter Matrix Control Row -->
+    <div class="filter-matrix-wrapper">
+        <button class="matrix-filter-btn active" data-filter="all">All Specs</button>
+        <button class="matrix-filter-btn" data-filter="indoor">Indoor Foliage</button>
+        <button class="matrix-filter-btn" data-filter="outdoor">Outdoor Survival</button>
+        <button class="matrix-filter-btn" data-filter="succulent">Succulents & Arid</button>
+    </div>
+
+    <!-- Main Botanical Catalog Grid -->
+    <main class="library-grid-container" id="catalog-injection-matrix">
+        <!-- Dynamic Cards Injected via JavaScript -->
+    </main>
+
+    <footer>
+        <p>&copy; 2026 PlantCarePro — Department of Computer Science and Information Technology (CSIT), University of Lahore. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Matrix Array of Real Data Items to feed the UI dynamically
+        const botanicalLibraryDatabase = [
+            {
+                name: "Monstera Deliciosa",
+                scientific: "Monstera deliciosa",
+                category: "indoor",
+                water: "Every 1-2 weeks",
+                sun: "Bright Indirect",
+                temp: "18°C - 30°C",
+                difficulty: "Beginner",
+                img: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=600",
+                desc: "Famous for its natural leaf fenestrations. Requires balanced humidity arrays and well-draining molecular soil configurations."
+            },
+            {
+    name: "Fiddle Leaf Fig",
+    scientific: "Ficus lyrata",
+    category: "indoor",
+    water: "Every 7-10 Days",
+    sun: "Consistent Bright",
+    temp: "16°C - 24°C",
+    difficulty: "Expert",
+    // FIXED: Clean premium portrait of a Fiddle Leaf Fig
+    img: "https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&q=80&w=600",
+    desc: "Highly sensitive to relocation operations. Dropping leaves indicates automated self-defense loops reacting to draught vectors or low photons."
+},
+{
+    name: "Snake Plant",
+    scientific: "Sansevieria trifasciata",
+    category: "succulent",
+    water: "Every 2-3 weeks",
+    sun: "Low to Full Sun",
+    temp: "15°C - 35°C",
+    difficulty: "Beginner",
+    // LIVE, HIGH-SPEED WEB CDN IMAGE LINK (NO JPG EXTENSION APPLIED IN URL)
+    img: "https://images.pexels.com/photos/2123482/jpegplace",
+    desc: "An elite architectural processor for indoor environments. Converts CO2 to Oxygen during dark night cycles via dynamic Crassulacean Acid Metabolism."
+},
+            {
+                name: "English Ivy",
+                scientific: "Hedera helix",
+                category: "outdoor",
+                water: "Keep moist",
+                sun: "Partial Shade",
+                temp: "10°C - 22°C",
+                difficulty: "Intermediate",
+                img: "https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&q=80&w=600",
+                desc: "Excellent aggressive climbing canopy layer. Highly effective filter array for airborne particulate matrices and toxic vapor cycles."
+            }
+        ];
+
+        let activeFilter = "all";
+        let searchString = "";
+
+        // Sync Global Badge Count
+        const syncNavbarBadge = () => {
+            const cart = JSON.parse(localStorage.getItem('pc_cart') || '[]');
+            const count = cart.reduce((acc, item) => acc + item.qty, 0);
+            document.getElementById("global-cart-count").textContent = count;
+        };
+
+        // Complete Grid Compilation Render Routine
+        const buildLibraryGrid = () => {
+            const container = document.getElementById("catalog-injection-matrix");
+            container.innerHTML = "";
+
+            // Filter Matrix algorithm matching tags and search metrics
+            const computationalData = botanicalLibraryDatabase.filter(plant => {
+                const clearMatch = activeFilter === "all" || plant.category === activeFilter;
+                const keywordMatch = plant.name.toLowerCase().includes(searchString.toLowerCase()) || 
+                                     plant.scientific.toLowerCase().includes(searchString.toLowerCase()) ||
+                                     plant.desc.toLowerCase().includes(searchString.toLowerCase());
+                return clearMatch && keywordMatch;
+            });
+
+            if (computationalData.length === 0) {
+                container.innerHTML = `<div class="no-results-state">No botanical manuals match your current filtration settings.</div>`;
+                return;
+            }
+
+            // Loop out UI nodes
+            computationalData.forEach(plant => {
+                container.innerHTML += `
+                    <div class="care-profile-card">
+                        <div class="card-image-lens">
+                            <span class="category-pill-tag">${plant.category}</span>
+                            <img src="${plant.img}" alt="${plant.name}">
+                        </div>
+                        <div class="card-body-metrics">
+                            <h3>${plant.name}</h3>
+                            <span class="scientific-term">${plant.scientific}</span>
+                            
+                            <div class="vital-metrics-stack">
+                                <div class="metric-pill-box"><span class="emoji">💧</span>${plant.water}</div>
+                                <div class="metric-pill-box"><span class="emoji">☀️</span>${plant.sun}</div>
+                                <div class="metric-pill-box"><span class="emoji">🌡️</span>${plant.temp}</div>
+                                <div class="metric-pill-box"><span class="emoji">🛠️</span>${plant.difficulty}</div>
+                            </div>
+
+                            <p class="care-instruction-snippet">${plant.desc}</p>
+                            <button class="action-expansion-btn" onclick="triggerManualLog('${plant.name}')">Launch Full Diagnosis Manual</button>
+                        </div>
+                    </div>
+                `;
+            });
+        };
+
+        const triggerManualLog = (plantName) => {
+            alert(`📂 Initializing digital interface for [${plantName}] care algorithms... Diagnostics loaded fully.`);
+        };
+
+        // Standard Event Mapping Hooks
+        document.addEventListener("DOMContentLoaded", () => {
+            syncNavbarBadge();
+            buildLibraryGrid();
+
+            // Setup input field dynamic scanning
+            document.getElementById("library-search-field").addEventListener("input", (e) => {
+                searchString = e.target.value;
+                buildLibraryGrid();
+            });
+
+            // Map filter buttons matrix
+            document.querySelectorAll(".matrix-filter-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    document.querySelectorAll(".matrix-filter-btn").forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    activeFilter = btn.getAttribute("data-filter");
+                    buildLibraryGrid();
+                });
+            });
+
+            // Fluid Page Exit Interceptors
+            const links = document.querySelectorAll("a[href$='.html']");
+            links.forEach(link => {
+                link.addEventListener("click", (e) => {
+                    const dest = link.getAttribute("href");
+                    if (!dest || dest.startsWith("#") || link.getAttribute("target") === "_blank") return;
+                    
+                    e.preventDefault();
+                    document.body.classList.add("page-exit");
+                    setTimeout(() => { window.location.href = dest; }, 380); 
+                });
+            });
+        });
+    </script>
+</body>
+</html>

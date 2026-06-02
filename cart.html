@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Terminal Cart | PlantCarePro</title>
+    <style>
+        :root {
+            --primary: #1b4332;
+            --primary-dark: #0f271e;
+            --accent: #52b788;
+            --light-sage: #d8f3dc;
+            --bg-clean: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --danger: #ef4444;
+            --border: #e2e8f0;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-clean); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-x: hidden; 
+            opacity: 0;
+            transform: translateY(15px);
+            animation: pageFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Smooth Fluid Transitions */
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pageFadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-15px); }
+        }
+        body.page-exit {
+            animation: pageFadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        }
+        
+        nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 1.25rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .nav-links { display: flex; gap: 1.8rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; transition: var(--transition); }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); font-weight: 800; }
+        
+        .cart-icon-container { position: relative; text-decoration: none; font-size: 1.3rem; }
+        .cart-badge { position: absolute; top: -8px; right: -10px; background: #e63946; color: var(--white); border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); }
+
+        /* Premium Two-Column Checkout Layout */
+        .cart-checkout-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 2.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .cart-checkout-container { grid-template-columns: 1fr; }
+        }
+
+        .checkout-main-panel, .checkout-summary-panel {
+            background: var(--white);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(27,67,50,0.02);
+        }
+
+        .panel-title {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid var(--bg-clean);
+            padding-bottom: 1rem;
+        }
+
+        .items-list-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .empty-cart-state {
+            text-align: center;
+            padding: 4rem 0;
+            color: var(--text-muted);
+        }
+        .empty-cart-state p { margin-bottom: 1.5rem; font-style: italic; font-size: 1.1rem; }
+        .return-btn {
+            display: inline-block;
+            background: var(--light-sage);
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+        .return-btn:hover { background: var(--primary); color: #fff; }
+
+        /* Dynamic Product Card Trims */
+        .product-checkout-card {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--bg-clean);
+        }
+        .product-checkout-card img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .card-meta-details { flex: 1; }
+        .card-meta-details h3 { font-size: 1.15rem; font-weight: 800; color: var(--text-main); }
+        .card-meta-details .price-tag { font-size: 1rem; color: var(--accent); font-weight: 700; margin-top: 0.25rem; }
+        
+        .quantity-controller {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        .qty-action-btn {
+            background: var(--bg-clean);
+            border: 1px solid var(--border);
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .qty-action-btn:hover { background: var(--light-sage); color: var(--primary); border-color: var(--accent); }
+        .qty-current-val { font-size: 1rem; font-weight: 700; min-width: 20px; text-align: center; }
+
+        .item-destructive-trigger {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            align-self: center;
+        }
+        .item-destructive-trigger:hover { text-decoration: underline; opacity: 0.8; }
+
+        /* Order Summary Architecture */
+        .summary-receipt {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .receipt-row.grand-total {
+            border-top: 2px dashed var(--border);
+            padding-top: 1.25rem;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        /* Sexy Premium Gateway Grid */
+        .gateway-matrix-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.75px;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        .gateway-options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .gateway-option-card {
+            border: 2px solid var(--border);
+            background: var(--white);
+            padding: 1rem 0.5rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .gateway-option-card .icon { font-size: 1.4rem; }
+        .gateway-option-card.selected {
+            border-color: var(--accent);
+            background: var(--light-sage);
+            color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        /* Dynamic Payment Forms Styling */
+        .payment-sub-form {
+            background: var(--bg-clean);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            animation: formSlideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes formSlideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 0.4rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            outline: none;
+            transition: var(--transition);
+        }
+        .form-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
+        }
+        .form-row-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .complete-order-btn {
+            width: 100%;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 1.1rem;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(27,67,50,0.12);
+        }
+        .complete-order-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+        footer { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border); margin-top: auto; background: #fff; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">🌿 PlantCarePro</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="marketplace.html">Marketplace</a></li>
+            <li><a href="seeds.html">Seeds Shop</a></li>
+            <li><a href="booking.html">Book Expert</a></li>
+            <li><a href="library.html">Care Library</a></li>
+            <li><a href="nursery.html">Nursery Partner</a></li>
+            <li><a href="subscribe.html">Premium</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="cart.html" class="cart-icon-container active">🛒<div class="cart-badge" id="global-cart-count">0</div></a>
+        </div>
+    </nav>
+
+    <main class="cart-checkout-container">
+        <!-- Left Side Panel: Items Selection Grid -->
+        <section class="checkout-main-panel">
+            <h2 class="panel-title">🛒 Your Selected Terminal Items</h2>
+            <div class="items-list-wrapper" id="cart-items-injection-point">
+                <!-- Javascript will render item cards dynamically here -->
+            </div>
+        </section>
+
+        <!-- Right Side Panel: Price Calculation & Gateway Engine -->
+        <section class="checkout-summary-panel">
+            <h2 class="panel-title">📋 Order Finalization</h2>
+            
+            <div class="summary-receipt">
+                <div class="receipt-row">
+                    <span>Items Subtotal</span>
+                    <span id="subtotal-val">Rs. 0</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Ecosystem Safe Shipping</span>
+                    <span id="shipping-val">Rs. 200</span>
+                </div>
+                <div class="receipt-row grand-total">
+                    <span>Total Bill</span>
+                    <span id="total-val">Rs. 0</span>
+                </div>
+            </div>
+
+            <div class="gateway-selection-zone">
+                <p class="gateway-matrix-title">Secure Payment Method</p>
+                <div class="gateway-options-grid">
+                    <div class="gateway-option-card selected" data-gateway="COD">
+                        <span class="icon">📦</span>
+                        <span>Cash On Del.</span>
+                    </div>
+                    <div class="gateway-option-card" data-gateway="Easypaisa">
+                        <span class="icon">📱</span>
+                        <span>Easypaisa</span>
+                    </div>
+                    <div class="gateway-option-card" data-gateway="Card">
+                        <span class="icon">💳</span>
+                        <span>Visa / Master</span>
+                    </div>
+                </div>
+
+                <!-- DYNAMIC PAYMENT DETAILS INJECTION FORMS -->
+                <div id="dynamic-payment-forms">
+                    
+                    <!-- Easypaisa Form (Hidden by default) -->
+                    <div id="form-Easypaisa" class="payment-sub-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="ep-number">Easypaisa Mobile Number</label>
+                            <input type="tel" id="ep-number" placeholder="e.g., 03001234567" maxlength="11">
+                        </div>
+                        <div class="form-group">
+                            <label for="ep-otp">5-Digit Verification Code (OTP)</label>
+                            <input type="password" id="ep-otp" placeholder="•••••" maxlength="5" style="letter-spacing: 5px;">
+                        </div>
+                    </div>
+
+                    <!-- Credit/Debit Card Form (Hidden by default) -->
+                    <div id="form-Card" class="payment-sub-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="card-name">Cardholder Name</label>
+                            <input type="text" id="card-name" placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <input type="text" id="card-number" placeholder="4242 4242 4242 4242" maxlength="19">
+                        </div>
+                        <div class="form-row-grid">
+                            <div class="form-group">
+                                <label for="card-expiry">Expiry Date</label>
+                                <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="card-cvc">CVC / CVV</label>
+                                <input type="password" id="card-cvc" placeholder="•••" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <button class="complete-order-btn" id="submit-checkout-transaction">Finalize Premium Checkout</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 PlantCarePro — Department of Computer Science and Information Technology (CSIT), University of Lahore. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        let selectedGateway = "COD";
+
+        // Global Local Storage Cart Utility Functions
+        const fetchGlobalCart = () => JSON.parse(localStorage.getItem('pc_cart') || '[]');
+        const commitGlobalCart = (cart) => {
+            localStorage.setItem('pc_cart', JSON.stringify(cart));
+            renderCartArchitecture();
+        };
+
+        const renderCartArchitecture = () => {
+            const cart = fetchGlobalCart();
+            
+            // Sync current nav badges
+            const badgeCount = cart.reduce((acc, obj) => acc + obj.qty, 0);
+            document.getElementById("global-cart-count").textContent = badgeCount;
+
+            const injectionPoint = document.getElementById("cart-items-injection-point");
+            
+            if(cart.length === 0) {
+                injectionPoint.innerHTML = `
+                    <div class="empty-cart-state">
+                        <p>No botanical flora or seed vaults detected inside your selection.</p>
+                        <a href="index.html" class="return-btn">← Browse Ecosystem</a>
+                    </div>
+                `;
+                document.getElementById("subtotal-val").textContent = "Rs. 0";
+                document.getElementById("shipping-val").textContent = "Rs. 0";
+                document.getElementById("total-val").textContent = "Rs. 0";
+                return;
+            }
+
+            // Loop and compile item row components
+            let calculatedSubtotal = 0;
+            injectionPoint.innerHTML = "";
+            
+            cart.forEach((item, pos) => {
+                calculatedSubtotal += item.price * item.qty;
+                injectionPoint.innerHTML += `
+                    <div class="product-checkout-card">
+                        <img src="${item.img}" alt="${item.name}">
+                        <div class="card-meta-details">
+                            <h3>${item.name}</h3>
+                            <div class="price-tag">Rs. ${item.price.toLocaleString()}</div>
+                            <div class="quantity-controller">
+                                <button class="qty-action-btn" onclick="modifyItemQuantity(${pos}, -1)">-</button>
+                                <span class="qty-current-val">${item.qty}</span>
+                                <button class="qty-action-btn" onclick="modifyItemQuantity(${pos}, 1)">+</button>
+                            </div>
+                        </div>
+                        <button class="item-destructive-trigger" onclick="purgeCartElement(${pos})">Remove</button>
+                    </div>
+                `;
+            });
+
+            // Update Financial Parameters UI
+            const shippingCost = 200;
+            const absoluteTotal = calculatedSubtotal + shippingCost;
+
+            document.getElementById("subtotal-val").textContent = `Rs. ${calculatedSubtotal.toLocaleString()}`;
+            document.getElementById("shipping-val").textContent = `Rs. ${shippingCost}`;
+            document.getElementById("total-val").textContent = `Rs. ${absoluteTotal.toLocaleString()}`;
+        };
+
+        // Quantity Modifiers Functions
+        const modifyItemQuantity = (pos, balanceShift) => {
+            let currentCart = fetchGlobalCart();
+            currentCart[pos].qty += balanceShift;
+            if(currentCart[pos].qty <= 0) {
+                currentCart.splice(pos, 1);
+            }
+            commitGlobalCart(currentCart);
+        };
+
+        const purgeCartElement = (pos) => {
+            let currentCart = fetchGlobalCart();
+            currentCart.splice(pos, 1);
+            commitGlobalCart(currentCart);
+        };
+
+        // UI Bootstrapping Event Engine Loops
+        document.addEventListener("DOMContentLoaded", () => {
+            renderCartArchitecture();
+
+            // Toggle Class Selections on Gateway Interface Click Matrix
+            document.querySelectorAll(".gateway-option-card").forEach(option => {
+                option.addEventListener("click", () => {
+                    document.querySelectorAll(".gateway-option-card").forEach(c => c.classList.remove("selected"));
+                    option.classList.add("selected");
+                    selectedGateway = option.getAttribute("data-gateway");
+
+                    // Hide all payment sub-forms
+                    document.querySelectorAll(".payment-sub-form").forEach(form => form.style.display = "none");
+
+                    // Show selected payment method sub-form
+                    const targetedForm = document.getElementById(`form-${selectedGateway}`);
+                    if (targetedForm) {
+                        targetedForm.style.display = "block";
+                    }
+                });
+            });
+
+            // Auto-format card numbers with spaces for a premium experience
+            const cardInput = document.getElementById("card-number");
+            if (cardInput) {
+                cardInput.addEventListener("input", (e) => {
+                    let val = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                    let matches = val.match(/\d{4,16}/g);
+                    let match = matches && matches[0] || '';
+                    let parts = [];
+
+                    for (let i=0, len=match.length; i<len; i+=4) {
+                        parts.push(match.substring(i, i+4));
+                    }
+
+                    if (parts.length > 0) {
+                        e.target.value = parts.join(' ');
+                    } else {
+                        e.target.value = val;
+                    }
+                });
+            }
+
+            // Auto-format expiry date with a slash
+            const expiryInput = document.getElementById("card-expiry");
+            if (expiryInput) {
+                expiryInput.addEventListener("input", (e) => {
+                    let val = e.target.value.replace(/\D/g, '');
+                    if (val.length > 2) {
+                        e.target.value = val.substring(0, 2) + '/' + val.substring(2, 4);
+                    } else {
+                        e.target.value = val;
+                    }
+                });
+            }
+
+            // Execute Transaction Submissions with Strict Field Validation
+            document.getElementById("submit-checkout-transaction").addEventListener("click", () => {
+                const currentCart = fetchGlobalCart();
+                if(currentCart.length === 0) {
+                    alert("Operation Denied: Cannot process transactional logs on an empty matrix.");
+                    return;
+                }
+
+                // Gateway Custom Validation Logic
+                if (selectedGateway === "Easypaisa") {
+                    const epNum = document.getElementById("ep-number").value.trim();
+                    const epOtp = document.getElementById("ep-otp").value.trim();
+
+                    if (!epNum || epNum.length < 11 || !/^\d+$/.test(epNum)) {
+                        alert("❌ Validation Error: Please enter a correct 11-digit Easypaisa Account Mobile Number.");
+                        return;
+                    }
+                    if (!epOtp || epOtp.length < 5 || !/^\d+$/.test(epOtp)) {
+                        alert("❌ Validation Error: Please enter your valid 5-digit security verification code (OTP).");
+                        return;
+                    }
+                } 
+                else if (selectedGateway === "Card") {
+                    const cardName = document.getElementById("card-name").value.trim();
+                    const cardNum = document.getElementById("card-number").value.trim();
+                    const cardExp = document.getElementById("card-expiry").value.trim();
+                    const cardCvc = document.getElementById("card-cvc").value.trim();
+
+                    if (!cardName) {
+                        alert("❌ Validation Error: Cardholder name cannot be blank.");
+                        return;
+                    }
+                    if (!cardNum || cardNum.replace(/\s/g, '').length < 16) {
+                        alert("❌ Validation Error: Invalid Credit Card format. Must contain 16 numbers.");
+                        return;
+                    }
+                    if (!cardExp || cardExp.length < 5) {
+                        alert("❌ Validation Error: Card expiry parameter must use MM/YY formatting.");
+                        return;
+                    }
+                    if (!cardCvc || cardCvc.length < 3 || !/^\d+$/.test(cardCvc)) {
+                        alert("❌ Validation Error: 3-digit security code (CVC) missing on the back of the card.");
+                        return;
+                    }
+                }
+                
+                alert(`🚀 Secure Checkout Confirmed!\n\nYour order has been routed successfully via Gateway: [${selectedGateway}]. Delivery network dispatched!`);
+                commitGlobalCart([]); // Wipe cart clean on complete order transaction loops
+            });
+
+            // FLUID GLOBAL TRANSITION INTERCEPT ENGINE
+            const localizedLinks = document.querySelectorAll("a[href$='.html']");
+            localizedLinks.forEach(anchor => {
+                anchor.addEventListener("click", (e) => {
+                    const structuralUrl = anchor.getAttribute("href");
+                    if (!structuralUrl || structuralUrl.startsWith("#") || anchor.getAttribute("target") === "_blank") return;
+                    
+                    e.preventDefault();
+                    document.body.classList.add("page-exit");
+                    setTimeout(() => { window.location.href = structuralUrl; }, 380); 
+                });
+            });
+        });
+    </script>
+</body>
+</html>

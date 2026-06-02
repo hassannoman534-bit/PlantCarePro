@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Scaled Subscription Metrics | PlantCarePro</title>
+    <style>
+        :root {
+            --primary: #1b4332;
+            --primary-dark: #0f271e;
+            --accent: #52b788;
+            --light-sage: #d8f3dc;
+            --bg-clean: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background-color: var(--bg-clean); color: var(--text-main); }
+        
+        nav { background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 1.25rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; }
+        .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
+        .cart-icon-container { position: relative; text-decoration: none; font-size: 1.3rem; }
+        .cart-badge { position: absolute; top: -8px; right: -10px; background: #e63946; color: var(--white); border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); }
+
+        .tier-header-block { text-align: center; padding: 5rem 5% 2rem; }
+        .tier-header-block h1 { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+
+        .pricing-flex-matrix { max-width: 960px; margin: 2rem auto 5rem; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+        
+        .subscription-tier-node { background: var(--white); border: 1px solid #e2e8f0; border-radius: 16px; padding: 3rem; display: flex; flex-direction: column; justify-content: space-between; transition: var(--transition); position: relative; }
+        .subscription-tier-node.enterprise-glow { border: 2.5px solid var(--accent); box-shadow: 0 20px 40px rgba(15,23,42,0.04); }
+        
+        .featured-banner { position: absolute; top: -14px; right: 25px; background: var(--accent); color: var(--primary-dark); font-weight: 800; font-size: 0.75rem; padding: 0.35rem 1rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .currency-cluster { font-size: 2.8rem; font-weight: 900; margin: 1.5rem 0; color: var(--primary); letter-spacing: -1px; }
+        
+        .metric-checklist { list-style: none; margin: 2rem 0; }
+        .metric-checklist li { margin-bottom: 0.85rem; padding-left: 1.75rem; position: relative; font-size: 0.95rem; color: #334155; }
+        .metric-checklist li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 900; }
+        .metric-checklist li.negated { color: #cbd5e1; }
+        .metric-checklist li.negated::before { content: "✕"; color: #cbd5e1; }
+
+        .checkout-modal-btn { display: block; text-align: center; padding: 1rem; background: #f1f5f9; color: var(--text-main); font-weight: 700; text-decoration: none; border-radius: 8px; transition: var(--transition); cursor: pointer; border: none; font-size: 1rem; }
+        .subscription-tier-node.enterprise-glow .checkout-modal-btn { background: var(--primary); color: var(--white); box-shadow: 0 10px 20px rgba(27,67,50,0.1); }
+        .subscription-tier-node.enterprise-glow .checkout-modal-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+        /* Integrated Animated Structural Payment Processing Mock Window Overlay */
+        .gateway-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; z-index:4000; }
+        .gateway-container { background:var(--white); padding: 3.5rem; border-radius:16px; max-width:460px; width:100%; text-align:center; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); }
+        .gateway-loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 2rem auto; display: none; }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">🌿 PlantCarePro</a>
+        <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="marketplace.html">Marketplace</a></li>
+    <li><a href="seeds.html">Seeds Shop</a></li>
+    <li><a href="booking.html">Book Expert</a></li>
+    <li><a href="library.html">Care Library</a></li>
+    <li><a href="nursery.html">Nursery Partner</a></li>
+    <li><a href="subscribe.html">Premium</a></li>
+</ul>
+        <div class="nav-actions">
+    <a href="cart.html" class="cart-icon-container" id="open-cart-trigger">
+        🛒<div class="cart-badge" id="global-cart-count">0</div>
+    </a>
+</div>
+    </nav>
+
+    <header class="tier-header-block">
+        <h1>Predictable Continuous Care Plans</h1>
+        <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 1.05rem;">Access reliable botanical support structures on a month-to-month basis.</p>
+    </header>
+
+    <main class="pricing-flex-matrix">
+        <div class="subscription-tier-node">
+            <div>
+                <h3>Standard Access</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top:0.25rem;">Basic browser tracking loops</p>
+                <div class="currency-cluster">Rs. 0 <span style="font-size:1rem; color:var(--text-muted); font-weight:normal;">/ permanent</span></div>
+                <ul class="metric-checklist">
+                    <li>Read-only documentation profiles.</li>
+                    <li>On-demand expert booking access matrix.</li>
+                    <li class="negated">Phase 2 AI Image Pathology Identification.</li>
+                    <li class="negated">Guaranteed Priority Specialist Response (&lt;24h).</li>
+                    <li class="negated">Live Botanical Chat Integration.</li>
+                </ul>
+            </div>
+            <button class="checkout-modal-btn" disabled>Active Core Level</button>
+        </div>
+
+        <div class="subscription-tier-node enterprise-glow">
+            <span class="featured-banner">Ecosystem Choice</span>
+            <div>
+                <h3>Premium Care Pass</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top:0.25rem;">Complete botanical monitoring protection</p>
+                <div class="currency-cluster">Rs. 1700 <span style="font-size:1rem; color:var(--text-muted); font-weight:normal;">/ month</span></div>
+                <ul class="metric-checklist">
+                    <li>Full unlimited Care Library tracking.</li>
+                    <li>Priority expert response guarantees (&lt;24 hrs).</li>
+                    <li><strong>AI-powered Photo Diagnosis (Phase 2 Integration)</strong></li>
+                    <li>24/7 dedicated specialist chat support.</li>
+                    <li>Exclusive access articles on rare exotic flora.</li>
+                </ul>
+            </div>
+            <button class="checkout-modal-btn" id="premium-purchase-trigger">Subscribe To Premium</button>
+        </div>
+    </main>
+
+    <div class="gateway-overlay" id="payment-gateway-screen">
+        <div class="gateway-container" id="gateway-box-content">
+            <h3 style="color:var(--primary); font-size:1.4rem;">Secure Ecosystem Connection Layer</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-top:0.5rem;">Simulating external endpoint checkout handoff loop metrics for active value: <strong>Rs. 499 / Month</strong>.</p>
+            <div class="gateway-loader" id="gateway-spinner"></div>
+            <div id="form-mock-elements" style="margin-top:1.5rem;">
+                <input type="text" placeholder="Dummy Card Number (e.g. 4242 ...)" style="width:100%; padding:0.8rem; margin-bottom:1rem; border:1px solid #ddd; border-radius:6px;">
+                <button class="checkout-modal-btn" id="execute-mock-payment-btn" style="background:var(--accent); color:var(--primary); width:100%;">Authorize State Transaction</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 PlantCarePro — Department of Computer Science (CSDL), University of Lahore. All Rights Reserved.</p>
+    </footer>
+
+    <script src="db.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const openBtn = document.getElementById("premium-purchase-trigger");
+            const screen = document.getElementById("payment-gateway-screen");
+            const execBtn = document.getElementById("execute-mock-payment-btn");
+            const spinner = document.getElementById("gateway-spinner");
+            const formBox = document.getElementById("form-mock-elements");
+            const boxContent = document.getElementById("gateway-box-content");
+
+            openBtn.addEventListener("click", () => screen.style.display = "flex");
+
+            execBtn.addEventListener("click", () => {
+                formBox.style.display = "none";
+                spinner.style.display = "block";
+                
+                setTimeout(() => {
+                    spinner.style.display = "none";
+                    boxContent.innerHTML = `
+                        <h3 style="color:#22c55e;">✓ Pipeline Transaction Confirmed</h3>
+                        <p style="color:var(--text-muted); margin-top:0.75rem; font-size:0.95rem;">Premium database state variables have mutated successfully. Welcome to your expanded PlantCarePro interface!</p>
+                        <button class="checkout-modal-btn" onclick="window.location.reload()" style="background:var(--primary); color:#fff; width:100%; margin-top:1.5rem;">Return to System</button>
+                    `;
+                }, 2000); // 2-second timeout mock processing sequence delay
+            });
+        });
+    </script>
+</body>
+</html>

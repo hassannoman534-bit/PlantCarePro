@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecosystem Dashboard | PlantCarePro</title>
+    <style>
+        :root {
+            --primary: #1b4332;
+            --primary-dark: #0f271e;
+            --accent: #52b788;
+            --light-sage: #d8f3dc;
+            --bg-clean: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-clean); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-x: hidden; 
+            opacity: 0;
+            transform: translateY(15px);
+            animation: pageFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Fluid Entrance and Exit Classes */
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pageFadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-15px); }
+        }
+        body.page-exit {
+            animation: pageFadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        }
+        
+        nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 1.25rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .nav-links { display: flex; gap: 1.8rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; transition: var(--transition); position: relative; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); font-weight: 800; }
+        
+        .hero-graphics-container { 
+            position: relative; 
+            padding: 8rem 5% 7rem; 
+            background: linear-gradient(135deg, rgba(27,67,50,0.88) 0%, rgba(15,39,30,0.94) 100%), 
+                        url('https://images.unsplash.com/photo-1512428813834-c702c7702b78?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            text-align: center; 
+            color: var(--white);
+        }
+
+        .hero-graphics-container h1 { 
+            font-size: 3.8rem; 
+            font-weight: 900; 
+            letter-spacing: -1px; 
+            margin: 0 auto 1.5rem; 
+            text-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+        .hero-graphics-container p { 
+            font-size: 1.25rem; 
+            color: rgba(255,255,255,0.85); 
+            max-width: 650px; 
+            margin: 0 auto 3rem;
+        }
+
+        .dashboard-grid { max-width: 1200px; margin: -3rem auto 2rem; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; position: relative; z-index: 20; }
+        .dash-card { background: var(--white); border-radius: 16px; border: 1px solid #e2e8f0; transition: var(--transition); text-decoration: none; color: inherit; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .dash-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(27,67,50,0.08); border-color: var(--accent); }
+        .card-image-box { width: 100%; height: 180px; background: #f1f5f9; overflow: hidden; }
+        .card-image-box img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+        .dash-card:hover .card-image-box img { transform: scale(1.06); }
+        .card-body-content { padding: 2rem; }
+        .dash-card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--primary); font-weight: 800; }
+        .dash-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+
+        .cart-icon-container { position: relative; text-decoration: none; font-size: 1.3rem; }
+        .cart-badge { position: absolute; top: -8px; right: -10px; background: #e63946; color: var(--white); border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); }
+
+        .ai-automation-section {
+            max-width: 1200px;
+            margin: 4rem auto 6rem;
+            padding: 0 1.5rem;
+        }
+        .ai-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+        .ai-header h2 {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+        .ai-header p {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+        .ai-card {
+            background: var(--white);
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+            transition: var(--transition);
+            position: relative;
+        }
+        .ai-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(27,67,50,0.08);
+            border-color: var(--accent);
+        }
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .ai-icon {
+            font-size: 1.8rem;
+            background: var(--light-sage);
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+        .ai-card h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+        .ai-card .desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        .metric-display {
+            display: flex;
+            align-items: baseline;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+        }
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .metric-unit {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .status-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        .status-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .switch-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 1.25rem;
+        }
+        .switch-label {
+            font-size: 0.825rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0; width: 0; height: 0;
+        }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1; transition: .3s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: var(--white); transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(24px); }
+        .ai-badge {
+            position: absolute; top: 20px; right: 20px; background: var(--primary); color: #fff;
+            font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.5px;
+        }
+
+        footer { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid #e2e8f0; margin-top: auto; background: #fff; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">🌿 PlantCarePro</a>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="marketplace.html">Marketplace</a></li>
+            <li><a href="seeds.html">Seeds Shop</a></li>
+            <li><a href="booking.html">Book Expert</a></li>
+            <li><a href="library.html">Care Library</a></li>
+            <li><a href="nursery.html">Nursery Partner</a></li>
+            <li><a href="subscribe.html">Premium</a></li>
+        </ul>
+        <div class="nav-actions">
+    <a href="cart.html" class="cart-icon-container" id="open-cart-trigger">
+        🛒<div class="cart-badge" id="global-cart-count">0</div>
+    </a>
+</div>
+    </nav>
+
+    <header class="hero-graphics-container">
+        <h1>Pakistan's First Premium Complete Plant Ecosystem Architecture</h1>
+        <p>Your one-stop terminal for healthy, certified live plants, organic crop seeds, and professional botanical specialist care networks.</p>
+    </header>
+
+    <main>
+        <section class="dashboard-grid">
+            <a href="marketplace.html" class="dash-card">
+                <div class="card-image-box">
+                    <img src="https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&w=500&q=80" alt="Live Plants">
+                </div>
+                <div class="card-body-content">
+                    <h3>Live Matured Flora</h3>
+                    <p>Procure health-certified local and exotic specimens securely dispatched from premium nurseries.</p>
+                </div>
+            </a>
+            <a href="seeds.html" class="dash-card">
+                <div class="card-image-box">
+                    <img src="https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=500&q=80" alt="Specialty Seeds">
+                </div>
+                <div class="card-body-content">
+                    <h3>Specialty Seed Vault</h3>
+                    <p>Browse highly verified micro-climate heirloom varieties engineered for optimal regional cropping cycles.</p>
+                </div>
+            </a>
+            <a href="booking.html" class="dash-card">
+                <div class="card-image-box">
+                    <img src="https://images.unsplash.com/photo-1622383563227-04401ab4e5ea?auto=format&fit=crop&w=500&q=80" alt="Expert Booking">
+                </div>
+                <div class="card-body-content">
+                    <h3>Expert Consultations</h3>
+                    <p>Schedule dynamic on-demand diagnostic property audits directly with on-field botanical pathologists.</p>
+                </div>
+            </a>
+            <a href="library.html" class="dash-card">
+                <div class="card-image-box">
+                    <img src="https://images.unsplash.com/photo-1446071103084-c257b5f70672?auto=format&fit=crop&w=500&q=80" alt="Care Encyclopedia">
+                </div>
+                <div class="card-body-content">
+                    <h3>Care Encyclopedia</h3>
+                    <p>Analyze clean data streams containing lighting metrics, soil properties, and strict watering bounds.</p>
+                </div>
+            </a>
+        </section>
+
+        <section class="ai-automation-section">
+            <div class="ai-header">
+                <h2>🤖 AI Intelligent Environmental Matrix</h2>
+                <p>Live neural link parameters managing microclimatic growth loops in real-time.</p>
+            </div>
+
+            <div class="ai-grid">
+                <div class="ai-card">
+                    <span class="ai-badge">NEURAL LNK</span>
+                    <div class="card-top">
+                        <div class="ai-icon">💧</div>
+                    </div>
+                    <h3>Intelligent Watering</h3>
+                    <p class="desc">Automated drip nodes calculate optimal volumetric soil moisture index parameters dynamically.</p>
+                    <div class="metric-display">
+                        <div class="metric-value" id="water-val">42</div>
+                        <div class="metric-unit">% Soil Vol</div>
+                    </div>
+                    <div class="status-bar-track">
+                        <div class="status-bar-fill" id="water-bar" style="width: 42%;"></div>
+                    </div>
+                    <div class="switch-wrapper">
+                        <span class="switch-label">Auto-Irrigation</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-watering" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="ai-card">
+                    <span class="ai-badge">NEURAL LNK</span>
+                    <div class="card-top">
+                        <div class="ai-icon">💨</div>
+                    </div>
+                    <h3>Mist Control</h3>
+                    <p class="desc">Ultrasonic atomizers maintain specific localized dew point settings to prevent leaf drying.</p>
+                    <div class="metric-display">
+                        <div class="metric-value" id="mist-val">65</div>
+                        <div class="metric-unit">PPM Density</div>
+                    </div>
+                    <div class="status-bar-track">
+                        <div class="status-bar-fill" id="mist-bar" style="width: 65%;"></div>
+                    </div>
+                    <div class="switch-wrapper">
+                        <span class="switch-label">Active Vaporization</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-mist">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="ai-card">
+                    <span class="ai-badge">NEURAL LNK</span>
+                    <div class="card-top">
+                        <div class="ai-icon">🌡️</div>
+                    </div>
+                    <h3>Temperature Target</h3>
+                    <p class="desc">Proportional climate loops balance thermal adjustments to preserve root structure metabolic rates.</p>
+                    <div class="metric-display">
+                        <div class="metric-value" id="temp-val">24.5</div>
+                        <div class="metric-unit">°C Core</div>
+                    </div>
+                    <div class="status-bar-track">
+                        <div class="status-bar-fill" id="temp-bar" style="width: 55%; background: #ef4444;"></div>
+                    </div>
+                    <div class="switch-wrapper">
+                        <span class="switch-label">Thermal Regulation</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-temp" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="ai-card">
+                    <span class="ai-badge">NEURAL LNK</span>
+                    <div class="card-top">
+                        <div class="ai-icon">☁️</div>
+                    </div>
+                    <h3>Humidity Control</h3>
+                    <p class="desc">Monitors relative moisture variables continuously to replicate native tropical biomes perfectly.</p>
+                    <div class="metric-display">
+                        <div class="metric-value" id="humid-val">78</div>
+                        <div class="metric-unit">% RH Ambient</div>
+                    </div>
+                    <div class="status-bar-track">
+                        <div class="status-bar-fill" id="humid-bar" style="width: 78%; background: #3b82f6;"></div>
+                    </div>
+                    <div class="switch-wrapper">
+                        <span class="switch-label">Humidity Guard</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-humid" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 PlantCarePro — Department of Computer Science and Information Technology (CSIT), University of Lahore. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Synchronize Global Cart Metrics
+        const updateCartBadge = () => {
+            const countBadge = document.getElementById("global-cart-count");
+            const currentCart = JSON.parse(localStorage.getItem('pc_cart') || '[]');
+            countBadge.textContent = currentCart.reduce((acc, item) => acc + item.qty, 0);
+        };
+        document.addEventListener("DOMContentLoaded", updateCartBadge);
+        window.addEventListener('storage', updateCartBadge);
+
+        // REAL-TIME FLUID PAGE TRANSITION LINK ENGINE
+        document.addEventListener("DOMContentLoaded", () => {
+            const localLinks = document.querySelectorAll("a[href$='.html']");
+            
+            localLinks.forEach(link => {
+                link.addEventListener("click", (e) => {
+                    const targetUrl = link.getAttribute("href");
+                    
+                    // Don't interrupt links that are just anchor scroll parameters or empty paths
+                    if (!targetUrl || targetUrl.startsWith("#") || link.getAttribute("target") === "_blank") return;
+                    
+                    e.preventDefault();
+                    document.body.classList.add("page-exit");
+                    
+                    // Allow exit animation timeline window sequence to finish before changing window location
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 380); 
+                });
+            });
+        });
+
+        // Real-Time Fluctuation Telemetry Simulator Loop Matrix
+        document.addEventListener("DOMContentLoaded", () => {
+            const updateMetrics = () => {
+                if(document.getElementById('toggle-watering').checked) {
+                    let water = (40 + Math.random() * 5).toFixed(0);
+                    document.getElementById('water-val').textContent = water;
+                    document.getElementById('water-bar').style.width = water + '%';
+                } else {
+                    document.getElementById('water-val').textContent = "0";
+                    document.getElementById('water-bar').style.width = '0%';
+                }
+
+                if(document.getElementById('toggle-mist').checked) {
+                    let mist = (60 + Math.random() * 12).toFixed(0);
+                    document.getElementById('mist-val').textContent = mist;
+                    document.getElementById('mist-bar').style.width = mist + '%';
+                } else {
+                    document.getElementById('mist-val').textContent = "0";
+                    document.getElementById('mist-bar').style.width = '0%';
+                }
+
+                if(document.getElementById('toggle-temp').checked) {
+                    let temp = (23.8 + Math.random() * 1.4).toFixed(1);
+                    document.getElementById('temp-val').textContent = temp;
+                    document.getElementById('temp-bar').style.width = '55%';
+                } else {
+                    document.getElementById('temp-val').textContent = "--";
+                    document.getElementById('temp-bar').style.width = '0%';
+                }
+
+                if(document.getElementById('toggle-humid').checked) {
+                    let humid = (75 + Math.random() * 6).toFixed(0);
+                    document.getElementById('humid-val').textContent = humid;
+                    document.getElementById('humid-bar').style.width = humid + '%';
+                } else {
+                    document.getElementById('humid-val').textContent = "0";
+                    document.getElementById('humid-bar').style.width = '0%';
+                }
+            };
+
+            setInterval(updateMetrics, 3000);
+
+            document.getElementById('toggle-watering').addEventListener('change', updateMetrics);
+            document.getElementById('toggle-mist').addEventListener('change', updateMetrics);
+            document.getElementById('toggle-temp').addEventListener('change', updateMetrics);
+            document.getElementById('toggle-humid').addEventListener('change', updateMetrics);
+        });
+    </script>
+</body>
+</html>
