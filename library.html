@@ -234,144 +234,145 @@
         }
 
         footer { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border); margin-top: auto; background: #fff; }
+        
         /* ==========================================================================
-   PREMIUM MOBILE OPTIMIZATION ENGINE (ADD TO THE BOTTOM OF YOUR STYLE TAGS)
-   ========================================================================== */
+           PREMIUM MOBILE OPTIMIZATION ENGINE
+           ========================================================================== */
 
-/* Universal Touch & Tap Enhancements */
-html {
-    -webkit-text-size-adjust: 100%; /* Prevents iOS font resizing quirks */
-    touch-action: manipulation;     /* Eliminates the 300ms mobile tap delay */
-}
+        /* Universal Touch & Tap Enhancements */
+        html {
+            -webkit-text-size-adjust: 100%; /* Prevents iOS font resizing quirks */
+            touch-action: manipulation;     /* Eliminates the 300ms mobile tap delay */
+        }
 
-input, button, .matrix-filter-btn, .gateway-option-card, .qty-action-btn {
-    min-height: 44px; /* Meets strict Apple & Android touch target standards */
-}
+        input, button, .matrix-filter-btn, .gateway-option-card, .qty-action-btn {
+            min-height: 44px; /* Meets strict Apple & Android touch target standards */
+        }
 
-/* Global Mobile Media Queries */
-@media (max-width: 768px) {
-    /* 1. Fluid Nav Menu & Responsive Header Adjustment */
-    nav {
-        padding: 1rem 4%;
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-    
-    .nav-links {
-        gap: 0.9rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    .nav-links a {
-        font-size: 0.85rem;
-        padding: 0.3rem 0.5rem;
-        background: rgba(0, 0, 0, 0.02);
-        border-radius: 6px;
-    }
+        /* Global Mobile Media Queries */
+        @media (max-width: 768px) {
+            /* 1. Fluid Nav Menu & Responsive Header Adjustment */
+            nav {
+                padding: 1rem 4%;
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .nav-links {
+                gap: 0.9rem;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.5rem;
+                background: rgba(0, 0, 0, 0.02);
+                border-radius: 6px;
+            }
 
-    /* 2. Hero Section Reductions */
-    .library-hero-zone {
-        padding: 3rem 1rem 4rem 1rem;
-    }
-    
-    .library-hero-zone h1 {
-        font-size: 1.85rem;
-        line-height: 1.2;
-    }
-    
-    .library-hero-zone p {
-        font-size: 0.95rem;
-        margin-bottom: 1.5rem;
-    }
+            /* 2. Hero Section Reductions */
+            .library-hero-zone {
+                padding: 3rem 1rem 4rem 1rem;
+            }
+            
+            .library-hero-zone h1 {
+                font-size: 1.85rem;
+                line-height: 1.2;
+            }
+            
+            .library-hero-zone p {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
 
-    /* 3. Horizontal Scroll Matrix for Filters (Saves Vertical Screen Space) */
-    .filter-matrix-wrapper {
-        margin: -1.5rem auto 2rem auto;
-        justify-content: flex-start;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 0.5rem 1rem;
-        gap: 0.5rem;
-        -webkit-overflow-scrolling: touch; /* Butter-smooth iOS momentum scrolling */
-    }
-    
-    .filter-matrix-wrapper::-webkit-scrollbar {
-        display: none; /* Hides ugly scrollbars while keeping swipe active */
-    }
-    
-    .matrix-filter-btn {
-        flex: 0 0 auto;
-        padding: 0.6rem 1.2rem;
-        font-size: 0.8rem;
-    }
+            /* 3. Horizontal Scroll Matrix for Filters (Saves Vertical Screen Space) */
+            .filter-matrix-wrapper {
+                margin: -1.5rem auto 2rem auto;
+                justify-content: flex-start;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding: 0.5rem 1rem;
+                gap: 0.5rem;
+                -webkit-overflow-scrolling: touch; /* Butter-smooth iOS momentum scrolling */
+            }
+            
+            .filter-matrix-wrapper::-webkit-scrollbar {
+                display: none; /* Hides ugly scrollbars while keeping swipe active */
+            }
+            
+            .matrix-filter-btn {
+                flex: 0 0 auto;
+                padding: 0.6rem 1.2rem;
+                font-size: 0.8rem;
+            }
 
-    /* 4. Single Column Card Engine Force */
-    .library-grid-container, 
-    .cart-checkout-container {
-        grid-template-columns: 1fr !important;
-        gap: 1.25rem;
-        padding: 0 1rem;
-        margin-bottom: 3rem;
-    }
+            /* 4. Single Column Card Engine Force */
+            .library-grid-container, 
+            .cart-checkout-container {
+                grid-template-columns: 1fr !important;
+                gap: 1.25rem;
+                padding: 0 1rem;
+                margin-bottom: 3rem;
+            }
 
-    .care-profile-card, 
-    .checkout-main-panel, 
-    .checkout-summary-panel {
-        padding: 1.25rem !important;
-        border-radius: 16px;
-    }
+            .care-profile-card, 
+            .checkout-main-panel, 
+            .checkout-summary-panel {
+                padding: 1.25rem !important;
+                border-radius: 16px;
+            }
 
-    /* 5. Mobile Metric Mini Grid Collapse */
-    .vital-metrics-stack {
-        grid-template-columns: 1fr 1fr; /* Retains clean 2x2 grid on mobile screens */
-        gap: 0.5rem;
-    }
-    
-    .metric-pill-box {
-        padding: 0.5rem;
-        font-size: 0.75rem;
-    }
+            /* 5. Mobile Metric Mini Grid Collapse */
+            .vital-metrics-stack {
+                grid-template-columns: 1fr 1fr; /* Retains clean 2x2 grid on mobile screens */
+                gap: 0.5rem;
+            }
+            
+            .metric-pill-box {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+            }
 
-    /* 6. Checkout Specific Mobile Adjustments */
-    .product-checkout-card {
-        flex-direction: row; /* Keeps elements side by side on slim viewports */
-        gap: 1rem;
-        align-items: flex-start;
-        position: relative;
-    }
-    
-    .product-checkout-card img {
-        width: 70px;
-        height: 70px;
-    }
-    
-    .card-meta-details h3 {
-        font-size: 1rem;
-    }
+            /* 6. Checkout Specific Mobile Adjustments */
+            .product-checkout-card {
+                flex-direction: row; /* Keeps elements side by side on slim viewports */
+                gap: 1rem;
+                align-items: flex-start;
+                position: relative;
+            }
+            
+            .product-checkout-card img {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .card-meta-details h3 {
+                font-size: 1rem;
+            }
 
-    .item-destructive-trigger {
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: 0.8rem;
-    }
+            .item-destructive-trigger {
+                position: absolute;
+                top: 0;
+                right: 0;
+                font-size: 0.8rem;
+            }
 
-    /* 7. Gateway Grid Engine Tuning */
-    .gateway-options-grid {
-        grid-template-columns: 1fr; /* Stack options for big, easy thumb-tapping */
-        gap: 0.5rem;
-    }
-    
-    .gateway-option-card {
-        flex-direction: row;
-        justify-content: center;
-        gap: 0.75rem;
-        padding: 0.8rem;
-    }
-}
+            /* 7. Gateway Grid Engine Tuning */
+            .gateway-options-grid {
+                grid-template-columns: 1fr; /* Stack options for big, easy thumb-tapping */
+                gap: 0.5rem;
+            }
+            
+            .gateway-option-card {
+                flex-direction: row;
+                justify-content: center;
+                gap: 0.75rem;
+                padding: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -392,7 +393,6 @@ input, button, .matrix-filter-btn, .gateway-option-card, .qty-action-btn {
         </div>
     </nav>
 
-    <!-- Header Section -->
     <header class="library-hero-zone">
         <h1>Ecosystem Botanical Library</h1>
         <p>Access high-fidelity plant metrics, algorithmic watering cycles, and diagnostic guidelines configured by automated cultivation protocols.</p>
@@ -401,7 +401,6 @@ input, button, .matrix-filter-btn, .gateway-option-card, .qty-action-btn {
         </div>
     </header>
 
-    <!-- Filter Matrix Control Row -->
     <div class="filter-matrix-wrapper">
         <button class="matrix-filter-btn active" data-filter="all">All Specs</button>
         <button class="matrix-filter-btn" data-filter="indoor">Indoor Foliage</button>
@@ -409,10 +408,8 @@ input, button, .matrix-filter-btn, .gateway-option-card, .qty-action-btn {
         <button class="matrix-filter-btn" data-filter="succulent">Succulents & Arid</button>
     </div>
 
-    <!-- Main Botanical Catalog Grid -->
     <main class="library-grid-container" id="catalog-injection-matrix">
-        <!-- Dynamic Cards Injected via JavaScript -->
-    </main>
+        </main>
 
     <footer>
         <p>&copy; 2026 PlantCarePro — Department of Computer Science and Information Technology (CSIT), University of Lahore. All Rights Reserved.</p>
@@ -433,29 +430,28 @@ input, button, .matrix-filter-btn, .gateway-option-card, .qty-action-btn {
                 desc: "Famous for its natural leaf fenestrations. Requires balanced humidity arrays and well-draining molecular soil configurations."
             },
             {
-    name: "Fiddle Leaf Fig",
-    scientific: "Ficus lyrata",
-    category: "indoor",
-    water: "Every 7-10 Days",
-    sun: "Consistent Bright",
-    temp: "16°C - 24°C",
-    difficulty: "Expert",
-    // FIXED: Clean premium portrait of a Fiddle Leaf Fig
-    img: "https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&q=80&w=600",
-    desc: "Highly sensitive to relocation operations. Dropping leaves indicates automated self-defense loops reacting to draught vectors or low photons."
-},
-{
-    name: "Snake Plant",
-    scientific: "Sansevieria trifasciata",
-    category: "succulent",
-    water: "Every 2-3 weeks",
-    sun: "Low to Full Sun",
-    temp: "15°C - 35°C",
-    difficulty: "Beginner",
-    // LIVE, HIGH-SPEED WEB CDN IMAGE LINK (NO JPG EXTENSION APPLIED IN URL)
-    img: "https://images.pexels.com/photos/2123482/jpegplace",
-    desc: "An elite architectural processor for indoor environments. Converts CO2 to Oxygen during dark night cycles via dynamic Crassulacean Acid Metabolism."
-},
+                name: "Fiddle Leaf Fig",
+                scientific: "Ficus lyrata",
+                category: "indoor",
+                water: "Every 7-10 Days",
+                sun: "Consistent Bright",
+                temp: "16°C - 24°C",
+                difficulty: "Expert",
+                img: "https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&q=80&w=600",
+                desc: "Highly sensitive to relocation operations. Dropping leaves indicates automated self-defense loops reacting to draught vectors or low photons."
+            },
+            {
+                name: "Snake Plant",
+                scientific: "Sansevieria trifasciata",
+                category: "succulent",
+                water: "Every 2-3 weeks",
+                sun: "Low to Full Sun",
+                temp: "15°C - 35°C",
+                difficulty: "Beginner",
+                // REPLACED WITH AN EXTRA-STABLE, PRODUCTION-GRADE MULTI-SYSTEM CLOUD URL
+                img: "https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&w=500&q=100",
+                desc: "An elite architectural processor for indoor environments. Converts CO2 to Oxygen during dark night cycles via dynamic Crassulacean Acid Metabolism."
+            },
             {
                 name: "English Ivy",
                 scientific: "Hedera helix",
